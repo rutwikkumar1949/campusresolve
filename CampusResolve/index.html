@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CampusResolve | Complaint Management</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <aside class="sidebar">
+    <div class="brand"><div class="brand-mark">CR</div><div><b>CampusResolve</b><small>STUDENT SERVICES</small></div></div>
+    <div class="nav-label">WORKSPACE</div>
+    <button class="nav active" data-page="dashboard"><span>▦</span> Overview</button>
+    <button class="nav" data-page="new"><span>＋</span> New complaint</button>
+    <button class="nav" data-page="tickets"><span>▤</span> Ticket queue</button>
+    <button class="nav" data-page="review"><span>◷</span> Human review <em id="reviewNavCount">0</em></button>
+    <div class="sidebar-bottom"><div class="status-dot"></div><div><b>Local system active</b><small>Data saved in this browser</small></div></div>
+  </aside>
+
+  <main class="main">
+    <header class="topbar"><div><div class="eyebrow">CAMPUS SUPPORT CENTER</div><h1 id="pageTitle">Overview</h1></div><div class="top-actions"><span class="today" id="today"></span><div class="avatar">CR</div></div></header>
+
+    <section class="page active" id="dashboard">
+      <div class="welcome"><div><div class="eyebrow light">CAMPUS RESOLVE</div><h2>Let's make campus better.</h2><p>classify and route student complaints to improve your campus experience.</p></div><button class="primary" data-go="new">＋ Submit complaint</button></div>
+      <div class="stats">
+        <article class="stat-card"><div class="stat-top"><span>Total complaints</span><span class="stat-icon blue">▤</span></div><strong id="totalStat">0</strong><small>All submitted tickets</small></article>
+        <article class="stat-card"><div class="stat-top"><span>Auto-routed</span><span class="stat-icon green">↗</span></div><strong id="routedStat">0</strong><small>Confident classifications</small></article>
+        <article class="stat-card"><div class="stat-top"><span>Needs review</span><span class="stat-icon amber">◷</span></div><strong id="reviewStat">0</strong><small>Awaiting human verification</small></article>
+        <article class="stat-card"><div class="stat-top"><span>High urgency</span><span class="stat-icon red">!</span></div><strong id="urgentStat">0</strong><small>Prioritised complaints</small></article>
+      </div>
+      <div class="content-grid">
+        <article class="panel"><div class="panel-heading"><div><h3>Recent complaints</h3><p>Latest activity from your campus</p></div><button class="text-btn" data-go="tickets">View all →</button></div><div id="recentList" class="ticket-list empty">No complaints yet. Submit your first complaint to get started.</div></article>
+        <article class="panel"><div class="panel-heading"><div><h3>Department overview</h3><p>Complaint distribution</p></div></div><div id="departmentChart" class="bars"></div></article>
+      </div>
+      <div class="footnote">Demo data is stored locally in this browser. Use the reset option in the footer to clear it.</div>
+    </section>
+
+    <section class="page" id="new">
+      <div class="section-intro"><div><h2>Submit a complaint</h2><p>Write in anyway that you can. Hinglish, English and Punjabi are supported by the rule-based demo classifier.</p></div></div>
+      <div class="form-layout">
+        <article class="panel form-panel">
+          <label for="complaintText">Complaint description <span class="required">*</span></label>
+          <textarea id="complaintText" maxlength="1000" placeholder="Example: Bhai 4th floor ka washroom ka tap 3 din se leak kar rha h..."></textarea>
+          <div class="field-foot"><span>Include any block, floor or room details you know.</span><span id="charCount">0 / 1000</span></div>
+          <div class="examples"><span>Try an example:</span><button class="example" data-example="Bhai 4th floor ke washroom ka tap 3 din se leak kar rha hai, please jaldi fix karo">Plumbing</button><button class="example" data-example="Block  B room 204 mein fan kaam nahi kar raha aur sparks aa rahe hain">Electrical</button><button class="example" data-example="Hostel WiFi down hai, kal se internet nahi chal raha">Wi-Fi</button><button class="example" data-example="Mess mein khana thanda mil raha hai aur quality bahut kharab hai">Mess</button></div>
+          <div class="form-row"><div class="field"><label for="reporter">Student name <span class="optional">(optional)</span></label><input id="reporter" placeholder="Your name"></div><div class="field"><label for="contact">Contact / registration ID <span class="optional">(optional)</span></label><input id="contact" placeholder="Optional"></div></div>
+          <button class="primary wide" id="analyseBtn">Analyse & route complaint <span>→</span></button>
+          <p class="privacy-note">No personal information is required. This demo does not send data to a server.</p>
+        </article>
+        <aside class="panel how-panel"><div class="how-icon">✦</div><h3>How smart routing works</h3><div class="step"><b>01</b><div><strong>Understand</strong><p>Detects department keywords and common Hinglish phrases.</p></div></div><div class="step"><b>02</b><div><strong>Extract</strong><p>Finds block, floor, room and urgency indicators.</p></div></div><div class="step"><b>03</b><div><strong>Route safely</strong><p>Low-confidence complaints are sent for human review.</p></div></div><div class="note-box">A transparent rules-based baseline. Confidence is a heuristic, not a calibrated probability.</div></aside>
+      </div>
+      <div id="analysisResult" class="panel result-panel hidden"></div>
+    </section>
+
+    <section class="page" id="tickets">
+      <div class="section-intro"><div><h2>Ticket queue</h2><p>All complaints and their routing status.</p></div><button class="secondary" id="exportBtn">↓ Export CSV</button></div>
+      <div class="toolbar"><input id="ticketSearch" placeholder="Search complaint, location or ID..."><select id="deptFilter"><option value="All">All departments</option><option>Plumbing</option><option>Electrical</option><option>Wi-Fi</option><option>Mess</option><option>Academic</option><option>Other</option></select><select id="statusFilter"><option value="All">All statuses</option><option>Routed</option><option>Needs review</option><option>Resolved</option></select></div>
+      <article class="panel"><div id="ticketTable" class="table-wrap"></div></article>
+    </section>
+
+    <section class="page" id="review">
+      <div class="section-intro"><div><h2>Human review queue</h2><p>Check uncertain classifications before they reach a department.</p></div></div>
+      <div id="reviewList" class="review-list"></div>
+    </section>
+
+    <footer><span>CampusResolve · Code Fuzion 2026 · M1</span><button id="resetBtn" class="text-btn danger-text">Reset demo data</button></footer>
+  </main>
+  <div id="toast" class="toast"></div>
+  <script src="classifier.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
